@@ -10,7 +10,9 @@
             try {
                 let response = await fetch('https://myip.wtf/json');
                 let ipData = await response.json();
-                
+                let responeipv4 = await fetch('https://ipv4.myip.wtf/text')
+                let ipv4 = await responeipv4.text();
+
                 let proxyResponse = await fetch(`https://vpnapi.io/api/${ipData.YourFuckingIPAddress}?key=${API}`);
                 let proxyData = await proxyResponse.json();
                 
@@ -23,6 +25,7 @@
 
                 const combinedData = {
                     ip: ipData.YourFuckingIPAddress,
+                    ipv4: ipv4,
                     locatie: ipData.YourFuckingLocation,
                     provider: ipData.YourFuckingISP,
                     hostname: ipData.YourFuckingHostname,
